@@ -878,14 +878,23 @@ class Ninja_Demo_Sandbox {
 		if ( isset ( $tables_list[0] ) && ! empty ( $tables_list[0] ) ) {
 
 			// Get a list of our current sandbox sites
-			$sandboxes = wp_get_sites();
+			if ( function_exists( 'get_sites' ) && class_exists( 'WP_Site_Query' ) ) {
+				$sandboxes = get_sites();        // WP 4.6
+			} else {
+				$sandboxes = wp_get_sites();     // WP < 4.6
+			}
 
 			foreach ( $tables_list as $tables ) {
 				$source_table = $tables[0];
 
 				// Check to see if this table belongs to another clone.
 				foreach ( $sandboxes as $s ) {
-					if ( Ninja_Demo()->is_sandbox( $s->blog_id ) && strpos( $source_table, $wpdb->base_prefix . $s->blog_id ) !== false ) {
+					if ( is_object( $s ) ) {
+						$blog_id = $s->blog_id;     // WP 4.6
+					} else {
+						$blog_id = $s['blog_id'];   // WP < 4.6
+					}
+					if ( Ninja_Demo()->is_sandbox( $blog_id ) && strpos( $source_table, $wpdb->base_prefix . $blog_id ) !== false ) {
 						continue 2;
 					}
 				}
