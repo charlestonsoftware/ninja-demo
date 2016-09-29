@@ -851,9 +851,6 @@ class Ninja_Demo_Sandbox {
 	private function run_clone( $source_prefix, $target_prefix ) {
 		global $report, $wpdb;
 
-		// Get a list of our current sandbox sites
-		$sandboxes = wp_get_sites();
-
 		//get list of source tables when cloning root
 		if( $source_prefix == $wpdb->base_prefix ){
 			$tables = $wpdb->get_results('SHOW TABLES');
@@ -879,6 +876,10 @@ class Ninja_Demo_Sandbox {
 		$num_tables = 0;
 
 		if ( isset ( $tables_list[0] ) && ! empty ( $tables_list[0] ) ) {
+
+			// Get a list of our current sandbox sites
+			$sandboxes = wp_get_sites();
+
 			foreach ( $tables_list as $tables ) {
 				$source_table = $tables[0];
 
